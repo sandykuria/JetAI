@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
 }
 
 android {
@@ -38,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -74,6 +78,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
     //splash
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -89,4 +94,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
     //Markdown support
     implementation ("com.github.jeziellago:compose-markdown:0.4.0")
+    //Gemini
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }
