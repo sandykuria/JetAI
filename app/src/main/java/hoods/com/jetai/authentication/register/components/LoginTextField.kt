@@ -1,8 +1,9 @@
-package hoods.com.jetai.authentication.components
+package hoods.com.jetai.authentication.register.components
 
-import androidx.compose.material3.Icon
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,28 +12,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import java.lang.Error
+import coil.memory.MemoryCache
+import org.w3c.dom.Text
 
 @Composable
 fun LoginTextField (
     modifier: Modifier = Modifier,
     value:String,
     onValueChange:(String) -> Unit,
-    labelText:String,
-    leadingIcon:ImageVector? = null,
+    labelText: String,
+    leadingIcon: ImageVector? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    isError: Boolean = false
-) {
+    isError:Boolean = false
+){
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
-        label =  {Text(labelText)},
+        label = { Text(labelText) },
         leadingIcon = {
-            if (leadingIcon != null) {
-                Icon(imageVector = leadingIcon, contentDescription = null)
-            }
+            if(leadingIcon != null) Icon(leadingIcon,null)
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType

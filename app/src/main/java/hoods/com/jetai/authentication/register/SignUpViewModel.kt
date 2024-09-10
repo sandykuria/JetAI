@@ -51,8 +51,9 @@ class SignUpViewModel(
                 )
             }
             is SignUpEvents.SignUp -> {
-                //todo create user
+                createUser()
             }
+
             is SignUpEvents.OnIsEmailVerificationChange -> {
                 signUpState = signUpState.copy(
                     isVerificationEmailSent = false
@@ -78,7 +79,7 @@ class SignUpViewModel(
             repository.createUser(signUpState.email, signUpState.password).collectAndHandle(
                 onError = {
                     signUpState = signUpState.copy(
-                        isSuccessLogin = false,
+                        isSuccessLogin = true,
                         isLoading = false
                     )
                     throw it ?: Throwable("Unknown Error")

@@ -1,9 +1,6 @@
 package hoods.com.jetai.authentication.register
 
-import android.text.Layout
-import androidx.compose.ui.Alignment
 import android.widget.Button
-import androidx.compose.material3.Button
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -20,39 +17,37 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.core.provider.FontsContractCompat.Columns
-import hoods.com.jetai.authentication.components.HeaderText
-import hoods.com.jetai.authentication.components.LoadingView
-import hoods.com.jetai.authentication.components.LoginTextField
+import androidx.lifecycle.ViewModel
+import hoods.com.jetai.authentication.register.components.HeaderText
+import hoods.com.jetai.authentication.register.components.LoadingView
+import hoods.com.jetai.authentication.register.components.LoginTextField
 
 val defaultPadding = 16.dp
 val itemSpacing = 8.dp
 
-
 @Composable
 fun SignUpScreen(
     onLoginClick:() -> Unit,
-    onNavigateToLoginScreen: (Boolean) -> Unit,
+    onNavigateToLoginScreen:(Boolean) -> Unit,
     onBackButtonClicked:() -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SignUpViewModel = viewModel()
+    viewModel: SignUpViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val signUpState = viewModel.signUpState
     val context = LocalContext.current
-    LaunchedEffect(signUpState.isVerificationEmailSent) {
-        if (signUpState.isVerificationEmailSent){
+    LaunchedEffect(signUpState.isVerificationEmailSent){
+        if(signUpState.isVerificationEmailSent){
             onNavigateToLoginScreen(true)
             viewModel.signUpEvents(SignUpEvents.OnIsEmailVerificationChange)
         }
@@ -61,45 +56,67 @@ fun SignUpScreen(
         onBackButtonClicked()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
+    Column (
+        modifier = modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(defaultPadding),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        //Handle potential error messages
-        AnimatedVisibility(signUpState.loginErrorMsg!=null) {
+    ) {
+        AnimatedVisibility(signUpState.loginErrorMsg !=null) {
             Text(
                 text = signUpState.loginErrorMsg ?: "Unknown error",
                 color = MaterialTheme.colorScheme.error
             )
         }
-        //Header Text
         HeaderText(
             text = "Sign Up",
             modifier = Modifier
                 .padding(vertical = defaultPadding)
                 .align(alignment = Alignment.Start)
         )
-        //First Name TextField
         LoginTextField(
             value = signUpState.firstName,
-            onValueChange = {viewModel.signUpEvents(SignUpEvents.onFirstNameChange(it))} ,
+            onValueChange = {viewModel.signUpEvents(SignUpEvents.onFirstNameChange(it))},
             labelText = "First Name",
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(defaultPadding))
-
-        //Privacy and policy agreement row
+        LoginTextField(
+            value = signUpState.lastName,
+            onValueChange = {viewModel.signUpEvents(SignUpEvents.onLastNameChange(it))},
+            labelText = "Last Name",
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(defaultPadding))
+        LoginTextField(
+            value = signUpState.email,
+            onValueChange = {viewModel.signUpEvents(SignUpEvents.onEmailChange(it))},
+            labelText = "Email",
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(defaultPadding))
+        LoginTextField(
+            value = signUpState.password,
+            onValueChange = {viewModel.signUpEvents(SignUpEvents.onPasswordChange(it))},
+            labelText = "Password",
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(defaultPadding))
+        LoginTextField(
+            value = signUpState.confirmPassword,
+            onValueChange = {viewModel.signUpEvents(SignUpEvents.onConfirmPaswordChange(it))},
+            labelText = "confirm Password",
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(defaultPadding))
         Row (
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ){
             val privacyText = "Privacy"
-            val policyText = "Policy"
+            val policyText= "Policy"
             val annotatedString = buildAnnotatedString {
-                withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
+                withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)){
                     append("I agree with")
                 }
                 append("")
@@ -108,97 +125,85 @@ fun SignUpScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 ) {
-                    pushStringAnnotation(tag = privacyText, privacyText)
+                    pushStringAnnotation(tag = privacyText,privacyText)
                     append(privacyText)
                 }
 
-
-                withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
+                withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)){
                     append("And")
                 }
-
                 withStyle(
                     SpanStyle(
                         color = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    pushStringAnnotation(tag = policyText, policyText)
+                    pushStringAnnotation(tag = policyText,policyText)
                     append(policyText)
                 }
-
             }
             Checkbox(
                 checked = signUpState.agreeTerms,
-                onCheckedChange = {viewModel.signUpEvents(SignUpEvents.onAgreeTermsChange(it))}
+                onCheckedChange = { viewModel.signUpEvents(SignUpEvents.onAgreeTermsChange(it))}
                 )
             ClickableText(
-                text = annotatedString,
-                onClick = { offset ->
-                    annotatedString.getStringAnnotations(offset, offset).forEach {
-                        when (it.tag) {
-                            privacyText -> {
-                                Toast.makeText(context, "Privacy Text Clicked", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                            policyText -> {
-                                Toast.makeText(context, "Policy Text Clicked", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                text = annotatedString
+            ) { offset ->
+                annotatedString.getStringAnnotations(offset, offset).forEach {
+                    when(it.tag){
+                        privacyText -> {
+                            Toast.makeText(context, "Privacy Text Clicked", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        policyText -> {
+                            Toast.makeText(context, "Policy Text Clicked", Toast.LENGTH_SHORT)
+                                .show()
+
                         }
                     }
                 }
-            )
 
+            }
         }
-
-        }
-        Spacer(Modifier.height(defaultPadding + 8.dp))
-        Button(onClick = {
-            viewModel.signUpEvents(SignUpEvents.SignUp)
-        },
+        Spacer(modifier.height(defaultPadding + 8.dp))
+        Button(
+            onClick = {
+                viewModel.signUpEvents(SignUpEvents.SignUp)
+            },
             modifier = Modifier.fillMaxWidth()
         ){
-            Text(text = "Sign Up")
+            Text("Sign Up")
         }
         Spacer(Modifier.height(defaultPadding))
-        val signTxt = "Sign In"
-    val signInAnnotation = buildAnnotatedString {
-        withStyle(
-            SpanStyle(
+        val singTxt = "Sign In"
+        val signInAnnotation = buildAnnotatedString {
+            withStyle(
+                SpanStyle(
                 color = MaterialTheme.colorScheme.onBackground
             )
-        ) {
-            append("Already have an account?")
-        }
-        append("")
-        withStyle(
-            SpanStyle(color = MaterialTheme.colorScheme.primary)
-        ) {
-            pushStringAnnotation(signTxt, signTxt)
-            append(signTxt)
-        }
-    }
+            ){
+                append("Already have an account?")
+            }
+            append("")
+            withStyle(
+                SpanStyle(color = MaterialTheme.colorScheme.primary)
+            ){
+                pushStringAnnotation(singTxt,singTxt)
+                append(singTxt)
+            }
 
-    ClickableText(
-        text = signInAnnotation,
-        onClick = { offset ->
-            signInAnnotation.getStringAnnotations(start = offset, end = offset).firstOrNull()?.let { annotation ->
-                if (annotation.tag == signTxt) {
-                    onLoginClick()
+        }
+        ClickableText(
+            signInAnnotation,
+            ) { offset ->
+            signInAnnotation.getStringAnnotations(offset, offset). forEach{
+                if (it.tag == singTxt) {
+                    onLoginClick ()
                 }
             }
         }
 
 
-    )
-Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())
-        .padding(defaultPadding),
-    horizontalAlignment = Alignment.CenterHorizontally){
+    }
     LoadingView(signUpState.isLoading)
-}
 
 }
-
