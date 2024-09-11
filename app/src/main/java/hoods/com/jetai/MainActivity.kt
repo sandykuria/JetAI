@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import hoods.com.jetai.authentication.register.SignUpScreen
+import hoods.com.jetai.authentication.register.login.LoginScreen
 import hoods.com.jetai.ui.theme.JetAiTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,9 +24,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SignUpScreen(
-                        {},{},{}
+                    LoginScreen(
+                        isVerificationEmailSent = false,
+                        onSignUpClick = {},
+                        navigateToHomeScreen = {},
+                        onForgotPasswordClick = {}
                     )
+                    
                     val apikey = BuildConfig.api_key
                 }
             }

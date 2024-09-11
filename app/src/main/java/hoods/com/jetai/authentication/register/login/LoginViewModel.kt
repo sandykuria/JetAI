@@ -1,6 +1,7 @@
 package hoods.com.jetai.authentication.register.login
 
 import android.content.Intent
+import android.content.IntentSender
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +69,7 @@ class LoginViewModel (
                 login()
             }
             is LoginEvents.onResendVerification -> {
-                resendVerificaion()
+                resendVerification()
             }
             is LoginEvents.SignInWithGoogle -> {
                 viewModelScope.launch {
@@ -98,7 +99,7 @@ class LoginViewModel (
     private fun validateLoginForm() =
         loginState.email.isNotBlank() && loginState.password.isNotBlank()
 
-    private fun resendVerificaion(){
+    private fun resendVerification(){
         try {
             repository.sendVerificationEmail(
                 onSuccess = {
@@ -169,10 +170,13 @@ class LoginViewModel (
             throw IllegalArgumentException (
                 """
                     We've sent a verification link to your email.
-                    Please check your inbox and click the link to activae your account.${loginState.currentUser?.email}
+                    Please check your inbox and click the link to activate your account.${loginState.currentUser?.email}
             """.trimIndent())
         }
     }
+    fun hasUserVerified(): Boolean = repository.hasUser() && repository.hasVerifiedUser()
+
+    suspend fun signInWithGoogleIntentSender(): IntentSender? = googleAuthClient.signIn()
 
 }
 
