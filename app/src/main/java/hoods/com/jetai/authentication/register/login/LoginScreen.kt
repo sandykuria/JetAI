@@ -142,7 +142,11 @@ fun LoginScreen (
               Spacer(Modifier.height(itemSpacing))
 
               Button(
-                  onClick = onForgotPasswordClick ,
+                  onClick = {
+                      viewModel.loginEvent(
+                          LoginEvents.Login
+                      )
+                  },
                   modifier = Modifier.fillMaxWidth()
               ){
                   Text("Login")
