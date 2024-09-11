@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -140,7 +141,7 @@ fun LoginScreen (
               )
               Spacer(Modifier.height(itemSpacing))
 
-              TextButton(
+              Button(
                   onClick = onForgotPasswordClick ,
                   modifier = Modifier.fillMaxWidth()
               ){
