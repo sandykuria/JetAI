@@ -4,14 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import hoods.com.jetai.authentication.register.SignUpScreen
 import hoods.com.jetai.authentication.register.login.LoginScreen
+import hoods.com.jetai.authentication.register.login.LoginViewModel
+import hoods.com.jetai.navigation.JetAiNavGraph
+import hoods.com.jetai.navigation.JetAiNavigationActions
+import hoods.com.jetai.navigation.Route
 import hoods.com.jetai.ui.theme.JetAiTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,16 +35,32 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(
-                        isVerificationEmailSent = false,
-                        onSignUpClick = {},
-                        navigateToHomeScreen = {},
-                        onForgotPasswordClick = {}
-                    )
-                    
+                    JetAiApp()
                     val apikey = BuildConfig.api_key
+
                 }
             }
+        }
+    }
+
+    @Composable
+    fun JetAiApp (){
+        val navController = rememberNavController()
+        val navAction = remember {
+            JetAiNavigationActions (navController)
+        }
+        val loginViewModel:LoginViewModel = viewModel()
+        val authState by remember { mutableStateOf(loginViewModel.hasUserVerified()) }
+
+        Scaffold {innerPadding ->
+            JetAiNavGraph(
+                navController = navController,
+                navAction = navAction,
+                loginViewModel = loginViewModel,
+                startDestination = Route.NESTED_AUTH_ROUTE,
+                modifier = Modifier.padding(innerPadding)
+            )
+
         }
     }
 }

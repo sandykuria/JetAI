@@ -58,7 +58,11 @@ class ForgotPasswordViewmodel(
                 }
             }
             is ForgotPasswordEvent.SendForgotPasswordLink -> {}
-            is ForgotPasswordEvent.onEmailChange -> TODO()
+            is ForgotPasswordEvent.onEmailChange -> {
+                forgotPasswordState = forgotPasswordState.copy(
+                    email = event.email
+                )
+            }
         }
     }
 
