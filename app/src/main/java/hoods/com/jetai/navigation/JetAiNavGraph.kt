@@ -23,6 +23,9 @@ fun JetAiNavGraph (
     startDestination: String,
 ){
     NavHost(navController = navController, startDestination = startDestination ){
+        authGraph(
+            navAction, navController, loginViewModel, modifier
+        )
 
 
     }
@@ -77,8 +80,9 @@ fun NavGraphBuilder.authGraph(
             )
         }
         composable(route = Route.ForgotPasswordScreen().route){
-            // TODO: Forgot password screen
-
+            Route.ForgotPasswordScreen (
+                navController.navigateUp().toString()
+            )
         }
 
 
