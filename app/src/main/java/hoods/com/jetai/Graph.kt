@@ -7,11 +7,15 @@ import hoods.com.jetai.repository.AuthRepository
 import hoods.com.jetai.repository.AuthRepositoryImpl
 import hoods.com.jetai.repository.GoogleAuthClient
 import com.google.android.gms.auth.api.identity.Identity
+import hoods.com.jetai.repository.ChatRepository
 
 object Graph {
 
     val authRepository: AuthRepository by lazy {
         AuthRepositoryImpl()
+    }
+    val chatRepository: ChatRepository by lazy {
+        ChatRepository()
     }
 
     lateinit var googleAuthClient: GoogleAuthClient
